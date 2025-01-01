@@ -22,14 +22,14 @@ import pycountry
 
 
 # Archivos json usados 
-world_geo = 'json\world_countries.json'
-diccionario_paises = 'json\diccionario_paises.json'
+world_geo = 'json/world_countries.json'
+diccionario_paises = 'json/diccionario_paises.json'
 
 # Archivos excel usados
-df_pais = pd.read_excel('datasets\df_pais.xlsx')
-df_sex_edad = pd.read_excel('datasets\df_plat.xlsx')
-df_plat = pd.read_excel('datasets\df_sex_edad.xlsx')
-captacion = pd.read_excel('datasets\captacion.xlsx')
+df_pais = pd.read_excel('datasets/df_pais.xlsx')
+df_sex_edad = pd.read_excel('datasets/df_plat.xlsx')
+df_plat = pd.read_excel('datasets/df_sex_edad.xlsx')
+captacion = pd.read_excel('datasets/captacion.xlsx')
 registro = pd.read_excel('datasets/registro.xlsx')
 venta = pd.read_excel('datasets/venta.xlsx')
 
