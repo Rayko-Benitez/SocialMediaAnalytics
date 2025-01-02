@@ -1,310 +1,256 @@
 import streamlit as st
-import pandas as pd
-import json
+#import pandas as pd
+#import json
 
-#graficos
-import matplotlib.pyplot as plt
-import seaborn as sns
-from plotly.express import choropleth
-from plotly import graph_objects as go
-from plotly.subplots import make_subplots
+#gráficos
+from grafic import funnel_alcance, funnel_impresiones                                       # Importo los gráficos de funnel para alcance e impresiones por campañas
+from grafic import columnas_alcance, columnas_impresiones                                   # Importo los gráficos de columnas para alcance e impresiones por campañas y paises
+from grafic import pastel_alcance, pastel_impresiones                                       # Importo los gráficos de pastel para alcance e impresiones por campañas por paises
+from grafic import sunburst_alcance, sunburst_impresiones                                   # Importo los gráficos de sunburst para alcance e impresiones por campañas y paises
+from grafic import world_map_captacion, world_map_registro, world_map_venta                 # Importo los mapas para alcance campañas
+#edad
+from grafic import bar_edad_al, bar_edad_im                                                 # Importo los gráficos de columnas para alcance e impresiones por campañas y edad
+from grafic import pastel_edad_al, pastel_edad_im                                           # Importo los gráficos de pastel para alcance e impresiones por campañas por edad
+from grafic import sunburst_edad_al, sunburst_edad_im                                       # Importo los gráficos de sunburst para alcance e impresiones por campañas y edad
+#genero
+from grafic import bar_sex_al, bar_sex_im                                                   # Importo los gráficos de columnas para alcance e impresiones por campañas y genero
+from grafic import pastel_sex_al, pastel_sex_im                                             # Importo los gráficos de pastel para alcance e impresiones por campañas por genero
+from grafic import sunburst_sex_al, sunburst_sex_im                                         # Importo los gráficos de sunburst para alcance e impresiones por campañas y genero
+#plataforma
+from grafic import sunburst_plat_al, sunburst_plat_im                                       # Importo los gráficos de sunburst para alcance e impresiones por plataformas
+from grafic import pastel_plat_al, pastel_plat_im                                           # Importo los gráficos de pastel para alcance e impresiones por plataformas
 
 
-#para el mapa del mundo
-import folium
-from folium import Choropleth
-
-#para el sunburst interactivo
-import plotly.express as px
-
-#para cambiar el codigo de pais al nombre
-import pycountry
-
-
-# Archivos json usados 
-world_geo = 'json/world_countries.json'
-diccionario_paises = 'json/diccionario_paises.json'
-
-# Archivos excel usados
-df_pais = pd.read_excel('datasets/df_pais.xlsx')
-df_sex_edad = pd.read_excel('datasets/df_plat.xlsx')
-df_plat = pd.read_excel('datasets/df_sex_edad.xlsx')
-captacion = pd.read_excel('datasets/captacion.xlsx')
-registro = pd.read_excel('datasets/registro.xlsx')
-venta = pd.read_excel('datasets/venta.xlsx')
 
 # Inicio de la interface de streamlit
 # Título de la página
 st.set_page_config(page_title="Dashboard de Métricas", layout="wide") #esto solo se puede usar al principio y no repetir
 
-# Barra lateral
+
+#Barra lateral
+# Logo
+st.sidebar.image("images/logo av_marina.png", width=100)
+with st.sidebar.expander("Nota:"):
+                st.caption("Esta App usa datos reales de campañas publicitarias realizadas de Septiembre a Diciembre. Tiene un uso práctico/didáctico con el que se pretende explorar y jugar con datos reales.")
+
 st.sidebar.title("Filtros")
-opcion = st.sidebar.selectbox("Selecciona visualización", ["Gráficos", "Tablas"])
+visual = st.sidebar.selectbox("Selecciona visualización", ["Gráficos", "Tablas", "KPI"])
 
-opciones = st.sidebar.multiselect(
-    "Selecciona métricas",
-    ["Pais", "Género", "Edad", "Plataformas"],
-    default=["Pais", "Género", "Edad", "Plataformas"]
-)
+metrica = st.sidebar.selectbox("Selecciona métrica", ["Pais", "Género", "Edad", "Plataformas"])
+
+
 st.sidebar.markdown("---")
-st.sidebar.title("KPI")
+st.sidebar.title("Glosario")
+with st.sidebar.expander("Alcance e impresiones:"):
+                st.caption("Alcance corresponde al número de cuentas únicas alcanzadas. Impresiones corresponde a las veces que ha sido visitado el anuncio en total")
+with st.sidebar.expander("Campañas:"):
+                st.caption("Para el caso mostrado se realizaron 3 fases o campañas. Captacion, Registro, Venta. Explicadas en glosario")
 
-# Cuerpo de la interface
+st.sidebar.markdown(
+    """
+    <div style="text-align: center;">
+        <a href="https://linktr.ee/rayko_benitez" target="_blank">
+            <img src="https://ugc.production.linktr.ee/097834f8-e2d7-4fe7-9d38-489fc794f840_DAGNQ4WeEPc.png?io=true&size=avatar-v3_0" width="50">
+        </a>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+#Interface o pantalla principal
 
 
 # Título principal
 st.title("Dashboard de Métricas Publicitarias")
-# Separador
-st.markdown("---")
+
+if visual == 'Gráficos':
+    if metrica == 'Pais':
+        # Funnel de alcance e impresiones
+        st.header("Alcance e impresiones", divider='rainbow') 
+
+        # Primera fila de gráficos
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.plotly_chart(funnel_alcance)
+
+        with col2:
+            st.plotly_chart(funnel_impresiones)
 
 
-# Funnel de alcance e impresiones
-st.header("Alcance e impresiones")
+        #gáfico de barras para comparar alcance e impresiones por paises
+        st.header("Alcance e impresiones por paises", divider='rainbow')
+        # Primera fila de gráficos
+        col3, col4 = st.columns(2)
 
-# Primera fila de gráficos
-col1, col2 = st.columns(2)
+        with col3:
+            st.plotly_chart(columnas_alcance)
 
-with col1:
-    df_funnel_al = df_pais.groupby('Nombre de la campaña', as_index=False)['Alcance'].sum()
-    funnel_alcance = px.funnel_area(names=df_funnel_al['Nombre de la campaña'],
-                    values=df_funnel_al['Alcance'],
-                    width=700,
-                    height=500,
-                    labels=df_funnel_al['Nombre de la campaña'],
-                    title='Funnel de alcance por campañas'
-                    )
-    st.plotly_chart(funnel_alcance)
+        with col4:
+            st.plotly_chart(columnas_impresiones)
 
-with col2:
-    df_funnel_im = df_pais.groupby('Nombre de la campaña', as_index=False)['Impresiones'].sum()
-    funnel_impresiones = px.funnel_area(names=df_funnel_im['Nombre de la campaña'],
-                        values=df_funnel_im['Impresiones'],
-                        width=700,
-                        height=500,
-                        labels=df_funnel_im['Nombre de la campaña'],
-                        title='Funnel de impresiones por campañas'
-                        )
-    st.plotly_chart(funnel_impresiones)
 
-st.markdown("---")
+        #graficos de pastel para alcance e impresiones por paises
+        # Alcance
+        st.header("Alcance por paises para cada Campaña", divider='rainbow')
+        st.plotly_chart(pastel_alcance)
 
-#gáfico de barras para comparar alcance e impresiones por paises
-# Primera fila de gráficos
-col3, col4 = st.columns(2)
+        #impresiones
+        st.header("Impresiones por paises para cada Campaña", divider='rainbow')
+        st.plotly_chart(pastel_impresiones)
 
-with col3:
-    columnas_alcance = go.Figure(
-    data=[
-        go.Bar(x=captacion['País'], y=captacion['Alcance'], name="Captacion"),
-        go.Bar(x=registro['País'], y=registro['Alcance'], name="Registro"),
-        go.Bar(x=venta['País'], y=venta['Alcance'], name="Venta"),
-    ],
-    layout=dict(
-        barcornerradius=5,
-        height=500,
-        barmode='group',
-        xaxis_tickangle=-45,
-        title='Alcance por Paises para cada Campaña'
-        ),
-    )
-    st.plotly_chart(columnas_alcance)
 
-with col4:
-    columnas_impresiones = go.Figure(
-    data=[
-        go.Bar(x=captacion['País'], y=captacion['Impresiones'], name="Captacion"),
-        go.Bar(x=registro['País'], y=registro['Impresiones'], name="Registro"),
-        go.Bar(x=venta['País'], y=venta['Impresiones'], name="Venta"),
-    ],
-    layout=dict(
-        barcornerradius=5,
-        height=500,
-        barmode='group',
-        xaxis_tickangle=-45,
-        title='Impresiones por Paises para cada Campaña'
-        ),
-    )
-    st.plotly_chart(columnas_impresiones)
+        #graficos de Sunburst para alcance e impresiones por paises
+        st.header("Gráfico de familia para Alcance e Impresiones por paises", divider='rainbow')
 
-st.markdown("---")
+        col1, col2 = st.columns(2)
+        # Alcance
+        with col1:
+            st.plotly_chart(sunburst_alcance)
 
-#graficos de pastel para alcance e impresiones por paises
-# Alcance
-st.subheader("Alcance por Paises para cada Campaña")
-pastel_alcance = make_subplots(rows=1, cols=3,
-                    column_widths=[700,700,700],
-                    row_heights=[2500],
-                    specs=[[{'type':'domain'},{'type':'domain'}, {'type':'domain'}]])
-pastel_alcance.add_trace(go.Pie(
-                labels=captacion['País'],
-                values=captacion['Alcance'],
-                name="Captacion"),
-                1, 1
-             )
-pastel_alcance.add_trace(go.Pie(
-                labels=registro['País'],
-                values=registro['Alcance'],
-                name="Registro"),
-                1, 2
-             )
-pastel_alcance.add_trace(go.Pie(
-                labels=venta['País'],
-                values=venta['Alcance'],
-                name="Venta"),
-                1, 3
-             )
+        # Impresiones
+        with col2:
+            st.plotly_chart(sunburst_impresiones)
 
-# Use `hole` to create a donut-like pie chart
-pastel_alcance.update_traces(hole=0, hoverinfo="label+percent+name") #tamaño del circulo interno, lo he quitado por eso 0
 
-pastel_alcance.update_layout(
+        #graficos tipo mapas para los paises alcanzados por campañas
+        st.header("Mapa de paises alcanzados por campaña", divider='rainbow')
+
+        st.markdown("### 01 Captación")
+        st.components.v1.html(world_map_captacion._repr_html_(), height=500)
+
+        st.markdown("### 02 Registro")
+        st.components.v1.html(world_map_registro._repr_html_(), height=500)
+
+        st.markdown("### 03 Venta")
+        st.components.v1.html(world_map_venta._repr_html_(), height=500)
+
+    elif metrica == 'Edad':
+        # gráficos por edad
+        # Funnel de alcance e impresiones
+        st.header("Alcance e impresiones", divider='rainbow') 
+
+        # Primera fila de gráficos
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.plotly_chart(funnel_alcance)
+
+        with col2:
+            st.plotly_chart(funnel_impresiones)
+
+
+        #gáfico de barras para comparar alcance e impresiones por paises
+        st.header("Alcance e impresiones por Edad", divider='rainbow')
+        # Primera fila de gráficos
+        col3, col4 = st.columns(2)
+
+        with col3:
+            st.plotly_chart(bar_edad_al)
+
+        with col4:
+            st.plotly_chart(bar_edad_im)
+
+
+        #graficos de pastel para alcance e impresiones por edad
+        # Alcance
+        st.header("Alcance por edad para cada Campaña", divider='rainbow')
+        st.plotly_chart(pastel_edad_al)
+
+        #impresiones
+        st.header("Impresiones por edad para cada Campaña", divider='rainbow')
+        st.plotly_chart(pastel_edad_im)
+
+
+        #graficos de Sunburst para alcance e impresiones por edad
+        st.header("Gráfico de familia para Alcance e Impresiones por edad", divider='rainbow')
+
+        col1, col2 = st.columns(2)
+        # Alcance
+        with col1:
+            st.plotly_chart(sunburst_edad_al)
+
+        # Impresiones
+        with col2:
+            st.plotly_chart(sunburst_edad_im)
     
-    # Añadir las anotaciones, que las he puesto encima porque quite el hueco del medio
-    annotations=[dict(text='Captacion', x=sum(pastel_alcance.get_subplot(1, 1).x) / 2, y=1.2,
-                      font_size=20, showarrow=False, xanchor="center"),
-                 dict(text='Registro', x=sum(pastel_alcance.get_subplot(1, 2).x) / 2, y=1.2,
-                      font_size=20, showarrow=False, xanchor="center"),
-                 dict(text='Venta', x=sum(pastel_alcance.get_subplot(1, 3).x) / 2, y=1.2,
-                      font_size=20, showarrow=False, xanchor="center")])
+    elif metrica == 'Género':
+          # gráficos por genero
+          # Funnel de alcance e impresiones
+        st.header("Alcance e impresiones", divider='rainbow') 
 
-st.plotly_chart(pastel_alcance)
+        # Primera fila de gráficos
+        col1, col2 = st.columns(2)
 
-#impresiones
-st.subheader("Impresiones por Paises para cada Campaña")
-pastel_impresiones = make_subplots(rows=1, cols=3,
-                    column_widths=[700,700,700],
-                    row_heights=[2500],
-                    specs=[[{'type':'domain'},{'type':'domain'}, {'type':'domain'}]])
-pastel_impresiones.add_trace(go.Pie(
-                labels=captacion['País'],
-                values=captacion['Impresiones'],
-                name="Captacion"),
-                1, 1
-             )
-pastel_impresiones.add_trace(go.Pie(
-                labels=registro['País'],
-                values=registro['Impresiones'],
-                name="Registro"),
-                1, 2
-             )
-pastel_impresiones.add_trace(go.Pie(
-                labels=venta['País'],
-                values=venta['Impresiones'],
-                name="Venta"),
-                1, 3
-             )
+        with col1:
+            st.plotly_chart(funnel_alcance)
 
-# Use `hole` to create a donut-like pie chart
-pastel_impresiones.update_traces(hole=0, hoverinfo="label+percent+name") #tamaño del circulo interno, lo he quitado por eso 0
-
-pastel_impresiones.update_layout(
-    
-    # Añadir las anotaciones, que las he puesto encima porque quite el hueco del medio
-    annotations=[dict(text='Captacion', x=sum(pastel_impresiones.get_subplot(1, 1).x) / 2, y=1.2,
-                      font_size=20, showarrow=False, xanchor="center"),
-                 dict(text='Registro', x=sum(pastel_impresiones.get_subplot(1, 2).x) / 2, y=1.2,
-                      font_size=20, showarrow=False, xanchor="center"),
-                 dict(text='Venta', x=sum(pastel_impresiones.get_subplot(1, 3).x) / 2, y=1.2,
-                      font_size=20, showarrow=False, xanchor="center")])
-
-st.plotly_chart(pastel_impresiones)
-
-st.markdown("---")
-
-#graficos de Sunburst para alcance e impresiones por paises
-st.subheader("Gráfico de familia para Alcance e Impresiones por paises")
-
-col1, col2 = st.columns(2)
-# Alcance
-with col1:
-    sunburst_alcance = px.sunburst(
-        df_pais,
-        path=['Nombre de la campaña', 'País'],  # Jerarquía: campaña -> países
-        values='Alcance',                         # Tamaño de cada segmento
-        title='Alcance de Campañas y Países',
-        width=500,
-        height=500,
-        color='Nombre de la campaña',             # Opcional, para diferenciar por color
-        color_discrete_sequence=px.colors.qualitative.Pastel  # Colores personalizados (opcional)
-    )
-    sunburst_alcance.update_traces(textinfo="label+percent entry")  # Muestra etiquetas y porcentaje
-    st.plotly_chart(sunburst_alcance)
-
-# Impresiones
-with col2:
-    sunburst_impresiones = px.sunburst(
-        df_pais,
-        path=['Nombre de la campaña', 'País'],  # Jerarquía: campaña -> países
-        values='Impresiones',                         # Tamaño de cada segmento
-        title='Impresiones de Campañas y Países',
-        width=500,
-        height=500,
-        color='Nombre de la campaña',             # Opcional, para diferenciar por color
-        color_discrete_sequence=px.colors.qualitative.Pastel  # Colores personalizados (opcional)
-    )
-    sunburst_impresiones.update_traces(textinfo="label+percent entry")  # Muestra etiquetas y porcentaje
-    st.plotly_chart(sunburst_impresiones)
-
-st.markdown("---")
-
-#graficos tipo mapas para los paises alcanzados por campañas
-st.subheader("Mapa de paises alcanzados por campaña")
-
-st.markdown("### 01 Captación")
-world_map_captacion = folium.Map(location=[0, 0], zoom_start=2)
-# Crear el mapa coroplético usando los datos de "Alcance" por "País"
-Choropleth(
-    geo_data=world_geo,
-    data= captacion,  # Tu DataFrame con las columnas 'País' y 'Alcance'
-    columns=['País', 'Alcance'],  # Especificar columnas clave para el análisis
-    key_on='feature.properties.name',  # Conectar los nombres del GeoJSON con los de tu DataFrame
-    fill_color='YlOrRd',  # Escala de colores
-    fill_opacity=0.7, 
-    line_opacity=0.2,
-    legend_name='Alcance por País',
-    reset=True
-).add_to(world_map_captacion)
-st.components.v1.html(world_map_captacion._repr_html_(), height=500)
-
-st.markdown("### 02 Registro")
-world_map_registro = folium.Map(location=[0, 0], zoom_start=2)
-
-# Crear el mapa coroplético usando los datos de "Alcance" por "País"
-Choropleth(
-    geo_data=world_geo,
-    data= registro,  # Tu DataFrame con las columnas 'País' y 'Alcance'
-    columns=['País', 'Alcance'],  # Especificar columnas clave para el análisis
-    key_on='feature.properties.name',  # Conectar los nombres del GeoJSON con los de tu DataFrame
-    fill_color='YlOrRd',  # Escala de colores
-    fill_opacity=0.7, 
-    line_opacity=0.2,
-    legend_name='Alcance por País',
-    reset=True
-).add_to(world_map_registro)
-st.components.v1.html(world_map_registro._repr_html_(), height=500)
-
-st.markdown("### 03 Venta")
-world_map_venta = folium.Map(location=[0, 0], zoom_start=2)
-
-# Crear el mapa coroplético usando los datos de "Alcance" por "País"
-Choropleth(
-    geo_data=world_geo,
-    data= venta,  # Tu DataFrame con las columnas 'País' y 'Alcance'
-    columns=['País', 'Alcance'],  # Especificar columnas clave para el análisis
-    key_on='feature.properties.name',  # Conectar los nombres del GeoJSON con los de tu DataFrame
-    fill_color='YlOrRd',  # Escala de colores
-    fill_opacity=0.7, 
-    line_opacity=0.2,
-    legend_name='Alcance por País',
-    reset=True
-).add_to(world_map_venta)
-st.components.v1.html(world_map_venta._repr_html_(), height=500)
+        with col2:
+            st.plotly_chart(funnel_impresiones)
 
 
+        #gáfico de barras para comparar alcance e impresiones por genero
+        st.header("Alcance e impresiones por Género", divider='rainbow')
+        # Primera fila de gráficos
+        col3, col4 = st.columns(2)
+
+        with col3:
+            st.plotly_chart(bar_sex_al)
+
+        with col4:
+            st.plotly_chart(bar_sex_im)
 
 
+        #graficos de pastel para alcance e impresiones por edad
+        # Alcance
+        st.header("Alcance por género para cada Campaña", divider='rainbow')
+        st.plotly_chart(pastel_sex_al)
+
+        #impresiones
+        st.header("Impresiones por género para cada Campaña", divider='rainbow')
+        st.plotly_chart(pastel_sex_im)
 
 
+        #graficos de Sunburst para alcance e impresiones por género
+        st.header("Gráfico de familia para Alcance e Impresiones por género", divider='rainbow')
+
+        col1, col2 = st.columns(2)
+        # Alcance
+        with col1:
+            st.plotly_chart(sunburst_sex_al)
+
+        # Impresiones
+        with col2:
+            st.plotly_chart(sunburst_sex_im)
+
+    elif metrica == 'Plataformas':
+        # gráficos por plataforma
+        #graficos de Sunburst para alcance e impresiones por plataformas
+        st.header("Gráfico de familia para Alcance e Impresiones plataformas", divider='rainbow')
+
+        col1, col2 = st.columns(2)
+        # Alcance
+        with col1:
+            st.plotly_chart(sunburst_plat_al)
+
+        # Impresiones
+        with col2:
+            st.plotly_chart(sunburst_plat_im)
+        
+        #graficos de pastel para alcance e impresiones plataforma
+        # Alcance
+        st.header("Alcance por plataformas", divider='rainbow')
+        st.plotly_chart(pastel_plat_al)
+
+        #impresiones
+        st.header("Impresiones por plataformas", divider='rainbow')
+        st.plotly_chart(pastel_plat_im)
 
 
-
+elif visual == 'Tablas':
+       # Tabla de alcance e impresiones por campaña
+       st.text('Estoy trabajando en esto')
+       
+elif visual == 'KPI':
+       # KPI de alcance e impresiones por campaña
+       st.text('Estoy trabajando en esto')
