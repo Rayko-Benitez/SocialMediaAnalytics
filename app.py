@@ -20,6 +20,12 @@ from grafic import sunburst_sex_al, sunburst_sex_im                             
 from grafic import sunburst_plat_al, sunburst_plat_im                                       # Importo los gráficos de sunburst para alcance e impresiones por plataformas
 from grafic import pastel_plat_al, pastel_plat_im                                           # Importo los gráficos de pastel para alcance e impresiones por plataformas
 
+#Tablas
+from tables import df_sex, df_plat, df_edad                                       # Importo las tablas de alcance e impresiones total
+from tables import alcance, impresiones2                                       # Importo las tablas de alcance e impresiones total ojo, el impresiones 2 es porque daba un error sin sentido, no renocia columna pais
+from tables import resultado_alcance, resultado_impresiones                                       # Importo las tablas de alcance e impresiones total
+from tables import r_captacion, r_registro, r_venta                                       # Importo las tablas de resultados totales por campañas
+from tables import total_face, total_insta                                       # Importo las tablas de resultados por plataformas
 
 
 # Inicio de la interface de streamlit
@@ -34,9 +40,10 @@ with st.sidebar.expander("Nota:"):
                 st.caption("Esta App usa datos reales de campañas publicitarias realizadas de Septiembre a Diciembre. Tiene un uso práctico/didáctico con el que se pretende explorar y jugar con datos reales.")
 
 st.sidebar.title("Filtros")
-visual = st.sidebar.selectbox("Selecciona visualización", ["Gráficos", "Tablas", "KPI"])
+visual = st.sidebar.selectbox("Selecciona visualización", ["Gráficos", "Tablas"])
 
-metrica = st.sidebar.selectbox("Selecciona métrica", ["Pais", "Género", "Edad", "Plataformas"])
+if visual == 'Gráficos': 
+    metrica = st.sidebar.selectbox("Selecciona métrica", ["Pais", "Género", "Edad", "Plataformas"])
 
 
 st.sidebar.markdown("---")
@@ -248,9 +255,42 @@ if visual == 'Gráficos':
 
 
 elif visual == 'Tablas':
-       # Tabla de alcance e impresiones por campaña
-       st.text('Estoy trabajando en esto')
-       
-elif visual == 'KPI':
-       # KPI de alcance e impresiones por campaña
-       st.text('Estoy trabajando en esto')
+       # Tabla resultados por campaña
+       st.header("Resultados por campaña", divider='rainbow')
+       col1, col2, col3 = st.columns(3)
+       with col1:
+           st.subheader('01 Captacion')
+           st.table(r_captacion)
+       with col2:
+           st.subheader('02 Registro')
+           st.table(r_registro)
+           st.info(':red[NOTA]: Las tablas contienen distintas métricas por los objetivos configurados en :blue[META] para cada una de las fases.')
+       with col3:
+           st.subheader('03 Venta')
+           st.table(r_venta)
+        
+       st.header("Alcance e Impresiones por paises", divider='rainbow')
+       col1, col2 = st.columns(2)
+       with col1:
+            st.subheader('Alcance')
+            st.table(alcance)
+       with col2:
+            st.subheader('Impresiones')
+            st.table(impresiones2)
+        
+       col1, col2 = st.columns(2)
+       with col1:
+            st.header("Género", divider='rainbow')
+            st.table(df_sex)
+       with col2:
+            st.header("Edad", divider='rainbow')
+            st.table(df_edad)
+
+        
+
+       st.header("Resultados en Facebook", divider='rainbow')
+       st.write(total_face)
+       st.header("Resultados en Instagram", divider='rainbow')
+       st.write(total_insta)
+
+
