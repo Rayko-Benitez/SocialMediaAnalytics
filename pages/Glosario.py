@@ -33,7 +33,6 @@ st.sidebar.markdown(
 # Título principal
 st.title("Explicación de la App y el trabajo realizado en las campañas")
 
-st.subheader("Estoy trabajando en este apartado")
 
 st.write("Es importante resaltar que esta app es para jugar con los datos, es parte de un trabajo de investigación y exploración de resultados de las campañas. La exploración de datos no es un proceso lineal, lleva un conjunto de preguntas y análisis que constantemente te hace avanzar y retroceder para ir creando conclusiones. ")
 st.write("Tiene inicialmente un objetivo de aprendizaje, analizar cuales son los valores de mayor interés, a qué darle mayor o menor importancia para el caso particular de cada campaña, no significa que para todas las campañas se deben analizar los mismos valores, pero por algún punto hay que empezar.")
@@ -41,11 +40,73 @@ st.write('Con este análisis se han llegado a muchas conclusiones, no las voy a 
 
 
 st.header("Campañas realizadas", divider='rainbow')
-# Insert containers separated into tabs:
-tab1, tab2, tab3 = st.tabs(["01 Captacion", "02 Registro", "03 Venta"])
-tab1.write("Se enfocó en reunir email a partir de una segmentacion estimada para reunir público objetivo")
-tab2.write("Se enfocó en que se registren interesados a varias clases introductorias de lo que verían en el programa e informacion de valor")
-tab3.write("Se enfocó en realizar venta del programa")
+
+# Insertar pestañas
+tab1, tab2, tab3 = st.tabs(["01 Captación", "02 Registro", "03 Venta"])
+
+with tab1:
+    st.markdown("""
+    ### **1. Fase de Captación**
+
+    - **¿Qué es?**  
+      Es la fase inicial del lanzamiento publicitario donde se busca atraer clientes potenciales que puedan estar interesados en la oferta. Se enfoca en generar tráfico hacia una página de registro.
+
+    - **¿Qué se hace?**  
+        - Creación de anuncios dirigidos a públicos fríos y tibios en plataformas como Facebook Ads.  
+        - Uso de estrategias de contenido para generar interés y visibilidad.  
+        - Implementación de una página de captura (Landing Page) para incentivar el registro.  
+
+    - **Objetivo:**  
+      Conseguir el mayor número posible de leads interesados en el lanzamiento, generando una base de datos sólida para las siguientes etapas.
+
+    - **Resultados esperados:**  
+        - Incremento en el reconocimiento de la marca.  
+        - Crecimiento de la lista de contactos interesados.  
+        - Aumento en la tasa de registros para el evento o promoción.
+    """)
+
+with tab2:
+    st.markdown("""
+    ### **2. Fase de Registro**
+
+    - **¿Qué es?**  
+      Es la fase donde se obtiene la conversión de visitantes en leads registrados, asegurando que los interesados pasen a la siguiente etapa del embudo.
+
+    - **¿Qué se hace?**  
+        - Creación de páginas de registro optimizadas con mensajes persuasivos.  
+        - Uso de formularios sencillos y llamados a la acción claros.  
+        - Automatización de respuestas y confirmaciones mediante email marketing o WhatsApp.  
+
+    - **Objetivo:**  
+      Lograr que las personas se registren en el evento, oferta o lanzamiento para mantener una comunicación directa con ellos.
+
+    - **Resultados esperados:**  
+        - Aumento en la tasa de conversión de visitantes a leads.  
+        - Construcción de una base de datos cualificada.  
+        - Segmentación efectiva de la audiencia según el interés mostrado.
+    """)
+
+with tab3:
+    st.markdown("""
+    ### **3. Fase de Venta**
+
+    - **¿Qué es?**  
+      Es la fase final donde se lleva a cabo la monetización del lanzamiento, convirtiendo a los leads en compradores.
+
+    - **¿Qué se hace?**  
+        - Implementación de estrategias de venta como escasez, prueba social y bonos de acción rápida.  
+        - Envío de secuencias de correos y mensajes persuasivos.  
+        - Cierre del carrito de compra con estrategias de urgencia.  
+
+    - **Objetivo:**  
+      Maximizar las conversiones y generar el mayor número de ventas en el periodo de lanzamiento.
+
+    - **Resultados esperados:**  
+        - Generación de ingresos y rentabilidad del lanzamiento.  
+        - Posicionamiento del producto en el mercado.  
+        - Creación de clientes satisfechos que pueden convertirse en embajadores de la marca.
+    """)
+
 
 
 
